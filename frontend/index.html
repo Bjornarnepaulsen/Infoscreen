@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <title>Infoskjerm – Kantine</title>
+
+  <!-- Automatisk reload av siden hver time (kan fjernes) -->
+  <meta http-equiv="refresh" content="3600" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="screen">
+    <header>
+      <div>
+        <div class="title">Kantine – Infoskjerm</div>
+        <div class="subtitle">Hva skjer på jobb · Innenriks (NRK) · Utenriks</div>
+      </div>
+      <div class="clock" id="clock"></div>
+    </header>
+
+    <main class="content-wrapper">
+      <!-- Seksjon: Hva skjer på jobb -->
+      <section class="section active" id="jobb-section">
+        <div class="section-header">
+          Hva skjer på jobb
+          <span>interne hendelser</span>
+        </div>
+        <ul class="item-list" id="jobb-list"></ul>
+      </section>
+
+      <!-- Seksjon: Innenriks -->
+      <section class="section" id="innenriks-section">
+        <div class="section-header">
+          INNENRIKS
+          <span>nyheter fra Norge (NRK)</span>
+        </div>
+        <ul class="item-list" id="innenriks-list"></ul>
+      </section>
+
+      <!-- Seksjon: Utenriks -->
+      <section class="section" id="utenriks-section">
+        <div class="section-header">
+          UTENRIKS
+          <span>internasjonale nyheter</span>
+        </div>
+        <ul class="item-list" id="utenriks-list"></ul>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div>Nyheter oppdatert: <span id="last-updated">–</span></div>
+        <div class="dots">
+          <div class="dot active" data-section="jobb"></div>
+          <div class="dot" data-section="innenriks"></div>
+          <div class="dot" data-section="utenriks"></div>
+        </div>
+      </div>
+
+      <div class="rotation-progress">
+        <div class="rotation-progress-bar" id="rotation-progress-bar"></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="./screen.js"></script>
+</body>
+</html>

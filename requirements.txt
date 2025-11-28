@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+feedparser
+sqlalchemy
+pydantic
+python-dotenv

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin – Hva skjer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    body {
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    .admin-wrapper {
+      max-width: 960px;
+      margin: 24px auto;
+      padding: 16px;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .admin-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .admin-subtitle {
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1.3fr;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      padding: 16px;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.6);
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+
+    .field {
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field label {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .field input[type="text"],
+    .field textarea,
+    .field input[type="number"] {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+    }
+
+    .field textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .field-row .field {
+      flex: 1;
+    }
+
+    .field-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      color: #d1d5db;
+    }
+
+    .field-inline input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #22c55e;
+      color: #022c22;
+    }
+
+    .btn-secondary {
+      background: #111827;
+      color: #e5e7eb;
+      border: 1px solid #4b5563;
+    }
+
+    .btn-danger {
+      background: #b91c1c;
+      color: #fee2e2;
+    }
+
+    .item-list-admin {
+      max-height: 70vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .admin-item {
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      padding: 10px 12px;
+      background: #020617;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .admin-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .admin-item-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .admin-item-meta {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .admin-item-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+    }
+
+    .pill-active {
+      background: #022c22;
+      color: #bbf7d0;
+    }
+
+    .pill-inactive {
+      background: #3f3f46;
+      color: #e4e4e7;
+    }
+
+    .pill-priority {
+      background: #1e293b;
+      color: #fde68a;
+    }
+
+    .status-bar {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .status-bar span {
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-wrapper">
+    <div class="admin-header">
+      <div>
+        <div class="admin-title">Admin – Hva skjer</div>
+        <div class="admin-subtitle">
+          Legg inn og oppdater lokale saker som vises på infoskjermen.
+        </div>
+      </div>
+      <div class="admin-subtitle">
+        <a href="/" style="color:#60a5fa; text-decoration:none;">← Til infoskjerm</a>
+      </div>
+    </div>
+
+    <div class="admin-layout">
+      <section class="card">
+        <h2 id="form-title">Ny sak</h2>
+        <form id="hva-skjer-form">
+          <input type="hidden" id="item-id" />
+
+          <div class="field">
+            <label for="title">Tittel</label>
+            <input type="text" id="title" required placeholder="F.eks. Statusmøte operativ avdeling" />
+          </div>
+
+          <div class="field">
+            <label for="description">Beskrivelse</label>
+            <textarea id="description" placeholder="Kort beskrivelse (valgfritt)"></textarea>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="source">Kilde / avsender</label>
+              <input type="text" id="source" placeholder="F.eks. HR, Kantina, Operativ avd." />
+            </div>
+            <div class="field">
+              <label for="time">Tidspunkt / periode (visningstekst)</label>
+              <input type="text" id="time" placeholder="F.eks. I dag 09:00–09:30" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="priority">Prioritet (0–100)</label>
+              <input type="number" id="priority" value="0" min="0" max="100" />
+            </div>
+          </div>
+
+          <div class="field-inline">
+            <input type="checkbox" id="active" checked />
+            <label for="active">Aktiv (vis på skjerm)</label>
+          </div>
+
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary" id="save-btn">Lagre sak</button>
+            <button type="button" class="btn btn-secondary" id="clear-btn">Nullstill</button>
+          </div>
+
+          <div class="status-bar" id="form-status"></div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Alle saker</h2>
+        <div class="item-list-admin" id="admin-list">
+          <!-- fylles av JS -->
+        </div>
+        <div class="status-bar">
+          Sist oppdatert: <span id="list-updated">–</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="./admin.js"></script>
+</body>
+</html>
