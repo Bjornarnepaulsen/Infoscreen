@@ -31,6 +31,7 @@ Infoscreen/
 │  │  │  ├─ utenriks.py
 │  │  ├─ internal/
 │  │     ├─ hva_skjer.py
+│  │  ├─ weather.py
 │  ├─ auth.py
 │  ├─ db.py
 │  ├─ models.py
@@ -151,6 +152,7 @@ DATABASE_URL=postgresql+psycopg2://user:pass@host:5432/infoscreen
 - **Innenriks:** hentes fra NRK sin RSS-feed.
 - **Utenriks (fallback):** Sky News World, BBC World, CNN World.
   - Første tilgjengelige brukes.
+- **Vær:** YR Locationforecast (default Bodø, kan overstyres via env)
 - **Hva skjer på jobb (lokalt innhold):**
   - Lagres i SQLite (eller ekstern DB)
   - Administreres via admin-panelet
@@ -199,7 +201,6 @@ Fungerer "rett ut av boksen" på:
 - Docker Swarm
 - AWS Lightsail / ECS
 - Azure Web App
-- GCP Cloud Run
 - GCP Cloud Run
 
 Typisk steg-for-steg:
