@@ -30,7 +30,11 @@ def get_innenriks():
     items = []
 
     for url in NRK_INNENRIKS_FEEDS:
-        feed = feedparser.parse(url)
+        try:
+            feed = feedparser.parse(url)
+        except Exception as exc:  # noqa: BLE001 - vi vil ikke knekke API
+            print(f"[innenriks] Klarte ikke hente {url}: {exc}")
+            continue
 
         for entry in feed.entries:
             item = {

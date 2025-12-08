@@ -8,6 +8,7 @@ En moderne infoskjerm-løsning for kantiner, arbeidsplasser og situasjonssentre.
 - 🛫 **Innenriks:** fra NRK
 - 🌍 **Utenriks:** fallback mellom Sky News / BBC / CNN
 - 🏢 **Interne meldinger:** via eget adminpanel
+- ☀️ **Vær:** nåværende og 7-dagers varsel (default: Bodø, kan overstyres)
 - 🔄 **Automatisk seksjons-rotasjon**
 - 🕒 **Live klokke og dato**
 - 📊 **Progressbar:** for neste seksjonsbytte
@@ -63,6 +64,10 @@ DATABASE_URL=sqlite:///./infoscreen.db
 # Admin login
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=changeme
+
+# (Optional) Weather position (default: Bodø)
+# WEATHER_LAT=67.2804
+# WEATHER_LON=14.4049
 ```
 
 **Lag din egen .env:**

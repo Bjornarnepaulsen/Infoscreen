@@ -1,7 +1,7 @@
 // ------------------------------------
 // Debug
 // ------------------------------------
-console.log("screen.js lastet – versjon 3.3 med progressbar");
+console.log("screen.js lastet – versjon 3.5 icons v20251208h");
 
 // ------------------------------------
 // Konstanter
@@ -13,6 +13,7 @@ const ROTATION_TICK_MS = 100;       // hvor ofte vi oppdaterer progress
 const INNENRIKS_API_URL = "/api/rss/innenriks";
 const UTENRIKS_API_URL = "/api/rss/utenriks";
 const HVA_SKJER_API_URL = "/api/hva-skjer";
+const WEATHER_API_URL = "/api/weather";
 
 // ------------------------------------
 // Klokke
@@ -177,6 +178,18 @@ const mockUtenriks = [
   }
 ];
 
+const mockWeather = {
+  current: {
+    temperature: null,
+    description: "Ingen værdata",
+  },
+  today: {
+    temp_min: null,
+    temp_max: null,
+    precip_prob: null,
+  },
+};
+
 // ------------------------------------
 // Init
 // ------------------------------------
@@ -185,6 +198,63 @@ const jobbListEl = document.getElementById("jobb-list");
 const innenriksListEl = document.getElementById("innenriks-list");
 const utenriksListEl = document.getElementById("utenriks-list");
 const lastUpdatedEl = document.getElementById("last-updated");
+const weatherEl = document.getElementById("weather");
+const weatherDaysEl = document.getElementById("weather-days");
+const weatherIconEl = document.getElementById("weather-icon");
+
+function iconUrl(symbol) {
+  if (!symbol) return null;
+  return `https://api.met.no/weatherapi/weathericon/2.0/icon/2/${symbol}.svg`;
+}
+
+function symbolEmoji(symbol) {
+  if (!symbol) return "🌡️";
+  const base = symbol.split("_")[0];
+  const map = {
+    clearsky: "☀️",
+    fair: "🌤️",
+    partlycloudy: "⛅",
+    cloudy: "☁️",
+    fog: "🌫️",
+    lightrain: "🌦️",
+    rain: "🌧️",
+    heavyrain: "🌧️",
+    lightrainshowers: "🌦️",
+    rainshowers: "🌧️",
+    heavyrainshowers: "🌧️",
+    sleet: "🌨️",
+    sleetshowers: "🌨️",
+    snow: "❄️",
+    snowshowers: "❄️",
+    heavysnow: "❄️",
+    thunder: "⛈️",
+  };
+  return map[base] || "🌡️";
+}
+
+function renderIcon(container, symbol, description) {
+  if (!container) return;
+  const emoji = symbolEmoji(symbol);
+  const src = iconUrl(symbol);
+  if (!src) {
+    container.innerHTML = `<span class="emoji" aria-hidden="true">${emoji}</span>`;
+    return;
+  }
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = description || "";
+  img.loading = "lazy";
+  img.onerror = () => {
+    container.innerHTML = `<span class="emoji" aria-hidden="true">${emoji}</span>`;
+  };
+  img.onload = () => {
+    container.innerHTML = "";
+    container.appendChild(img);
+  };
+  // Kick off load
+  container.innerHTML = "";
+  container.appendChild(img);
+}
 
 // ------------------------------------
 // Hent data fra backend
@@ -247,12 +317,98 @@ async function fetchHvaSkjer() {
   }
 }
 
+function renderWeather(data) {
+  if (!weatherEl) return;
+
+  const current = data?.current || {};
+  const today = data?.today || {};
+  const days = Array.isArray(data?.days) ? data.days : [];
+
+  const valueEl = weatherEl.querySelector(".weather-value");
+  const metaEl = weatherEl.querySelector(".weather-meta");
+
+  const temperature = Number.isFinite(current.temperature)
+    ? `${Math.round(current.temperature)}°C`
+    : "–";
+
+  const metaParts = [];
+  if (current.description) {
+    metaParts.push(current.description);
+  }
+
+  if (Number.isFinite(today.temp_min) && Number.isFinite(today.temp_max)) {
+    metaParts.push(`Min ${Math.round(today.temp_min)}° / Max ${Math.round(today.temp_max)}°`);
+  } else if (Number.isFinite(today.temp_max)) {
+    metaParts.push(`Max ${Math.round(today.temp_max)}°`);
+  }
+
+  if (Number.isFinite(today.precip_prob)) {
+    metaParts.push(`${Math.round(today.precip_prob)}% nedbør`);
+  }
+
+  if (valueEl) valueEl.textContent = temperature;
+  if (metaEl) metaEl.textContent = metaParts.join(" · ");
+  renderIcon(weatherIconEl, current.weathercode, current.description);
+
+  if (weatherDaysEl) {
+    weatherDaysEl.innerHTML = "";
+    const formatter = new Intl.DateTimeFormat("nb-NO", { weekday: "short" });
+    days.forEach((d, idx) => {
+      const dateObj = d.date ? new Date(d.date) : null;
+      const dayName = dateObj ? formatter.format(dateObj) : `Dag ${idx + 1}`;
+      const minTxt = Number.isFinite(d.temp_min) ? `${Math.round(d.temp_min)}°` : "–";
+      const maxTxt = Number.isFinite(d.temp_max) ? `${Math.round(d.temp_max)}°` : "–";
+      const el = document.createElement("div");
+      el.className = "weather-day";
+      el.innerHTML = `
+        <div class="day-name">${dayName}</div>
+        <div class="icon"></div>
+        <div class="temps">${maxTxt} / ${minTxt}</div>
+        <div class="desc">${d.description || ""}</div>
+      `;
+      const iconContainer = el.querySelector(".icon");
+      renderIcon(iconContainer, d.weathercode, d.description);
+      weatherDaysEl.appendChild(el);
+    });
+  }
+}
+
+async function fetchWeather() {
+  if (!weatherEl) return;
+  console.log("[weather] fetch start");
+  try {
+    const res = await fetch(WEATHER_API_URL);
+    if (!res.ok) {
+      // Prøv å lese feilmelding fra backend hvis mulig
+      let detail = "";
+      try {
+        const errJson = await res.json();
+        detail = errJson?.detail || errJson?.error || JSON.stringify(errJson);
+      } catch {
+        detail = await res.text();
+      }
+      throw new Error(`Feil status fra API (vær): ${res.status} ${detail || ""}`);
+    }
+    const data = await res.json();
+    if (data?.error) {
+      console.warn("[weather] backend svarte med feil:", data.error);
+    }
+    console.log("[weather] fetch ok", data);
+    renderWeather(data);
+  } catch (err) {
+    console.error("[weather] Feil ved henting av værdata:", err);
+    renderWeather(mockWeather);
+  }
+}
+
 // Første henting ved oppstart
 fetchInnenriks();
 fetchUtenriks();
 fetchHvaSkjer();
+fetchWeather();
 
 // Oppdater nyheter jevnlig
 setInterval(fetchInnenriks, 10 * 60 * 1000); // hver 10. min
 setInterval(fetchUtenriks, 10 * 60 * 1000);
+setInterval(fetchWeather, 10 * 60 * 1000);
 // Hva skjer oppdateres når seksjonen blir aktiv (showSection)

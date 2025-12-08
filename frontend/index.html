@@ -8,14 +8,25 @@
   <meta http-equiv="refresh" content="3600" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=20251208h" />
 </head>
 <body>
   <div class="screen">
     <header>
-      <div>
-        <div class="title">Infoskjerm</div>
+      <div class="header-left">
+        <div class="title"></div>
         <div class="subtitle">Hva skjer på jobb · Innenriks (NRK) · Utenriks</div>
+      </div>
+      <div class="weather" id="weather">
+        <div class="weather-title">Været</div>
+        <div class="weather-main">
+          <div class="weather-icon" id="weather-icon"></div>
+          <div class="weather-text">
+            <div class="weather-value">Laster...</div>
+            <div class="weather-meta"></div>
+          </div>
+        </div>
+        <div class="weather-days" id="weather-days"></div>
       </div>
       <div class="clock" id="clock"></div>
     </header>
@@ -66,6 +77,6 @@
 
   </div>
 
-  <script src="./screen.js"></script>
+  <script src="./screen.js?v=20251208h"></script>
 </body>
 </html>

@@ -37,7 +37,12 @@ def get_utenriks():
     active_source = None
 
     for source in UTENRIKS_SOURCES:
-        feed = feedparser.parse(source["url"])
+        try:
+            feed = feedparser.parse(source["url"])
+        except Exception as exc:  # noqa: BLE001
+            print(f"[utenriks] Klarte ikke hente {source['url']}: {exc}")
+            continue
+
         status = getattr(feed, "status", None)
 
         # Hvis vi ikke får OK-status eller ingen entries, prøv neste

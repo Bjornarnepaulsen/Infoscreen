@@ -8,6 +8,7 @@ from backend import models  # Viktig: importer modellene så de registreres hos 
 from backend.api.rss.innenriks import router as innenriks_router
 from backend.api.rss.utenriks import router as utenriks_router
 from backend.api.internal.hva_skjer import router as hva_skjer_router
+from backend.api.weather import router as weather_router
 
 print("Main lastet ✅")
 
@@ -25,6 +26,7 @@ app.include_router(utenriks_router, prefix="/api/rss")
 
 # Lokale saker (public + admin)
 app.include_router(hva_skjer_router, prefix="/api")
+app.include_router(weather_router, prefix="/api")
 
 # Frontend
 BASE_DIR = Path(__file__).resolve().parent.parent
