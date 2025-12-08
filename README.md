@@ -200,6 +200,7 @@ Fungerer "rett ut av boksen" på:
 - AWS Lightsail / ECS
 - Azure Web App
 - GCP Cloud Run
+- GCP Cloud Run
 
 Typisk steg-for-steg:
 
