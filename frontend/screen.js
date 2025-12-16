@@ -1,7 +1,7 @@
 // ------------------------------------
 // Debug
 // ------------------------------------
-console.log("screen.js lastet – versjon 3.8 menu v20251216c");
+console.log("screen.js lastet – versjon 3.9 menu v20251216d");
 
 // ------------------------------------
 // Konstanter
