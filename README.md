@@ -189,6 +189,58 @@ DATABASE_URL=postgresql+psycopg2://user:pass@host:5432/infoscreen
 👉 `http://<server>/admin.html`  
 Beskyttet med Basic Auth.
 
+### HTTPS / kryptert innlogging
+
+For at Basic Auth skal være kryptert må du kjøre over HTTPS (TLS). Vanligst er å terminere TLS i et proxy-lag foran appen (eks. Traefik/Nginx) og sende trafikk videre til uvicorn på port 8000.
+
+Eksempel med Traefik + Let’s Encrypt (docker-compose):
+
+```yaml
+version: "3.8"
+
+services:
+  app:
+    image: infoscreen:latest
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.infoscreen.rule=Host(`infoscreen.example.com`)"
+      - "traefik.http.routers.infoscreen.entrypoints=websecure"
+      - "traefik.http.routers.infoscreen.tls=true"
+      - "traefik.http.routers.infoscreen.tls.certresolver=lets"
+    expose:
+      - "8000"
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=superhemmelig
+
+  traefik:
+    image: traefik:v2.11
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.lets.acme.tlschallenge=true"
+      - "--certificatesresolvers.lets.acme.email=you@example.com"
+      - "--certificatesresolvers.lets.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+```
+
+Bytt `infoscreen.example.com` til ditt domene. Etter oppstart: gå til `https://<ditt-domene>/admin.html`.
+
+Alternativ (mindre vanlig): start uvicorn med egne sertifikatfiler:
+```sh
+uvicorn backend.main:app --host 0.0.0.0 --port 8443 \
+  --ssl-keyfile /path/to/key.pem \
+  --ssl-certfile /path/to/cert.pem
+```
+Du bør da også redirecte HTTP→HTTPS i et frontlag eller en enkel reverse proxy.
+
 ### Funksjoner
 
 - Legg til intern melding
