@@ -1,9 +1,14 @@
-from datetime import datetime, timezone
 import json
 import os
-from typing import Dict, Optional, List
+import ssl
+from datetime import datetime, timezone
+from typing import Dict, List, Optional
 from urllib import error, request
 
+try:
+    import certifi
+except ImportError:  # certifi skal installeres, men fallback til default context
+    certifi = None
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
@@ -60,8 +65,14 @@ def fetch_yr(lat: str, lon: str) -> dict:
         "User-Agent": "Infoscreen/1.0 (kontakt: infoscreen)",
     }
     req = request.Request(url, headers=headers)
+    ssl_context = (
+        ssl.create_default_context(cafile=certifi.where())
+        if certifi
+        else ssl.create_default_context()
+    )
     try:
-        with request.urlopen(req, timeout=8) as resp:
+        # Bruk certifi-bundle for å unngå manglende root-CA på Windows
+        with request.urlopen(req, context=ssl_context, timeout=8) as resp:
             payload = resp.read().decode("utf-8")
             return json.loads(payload)
     except error.URLError as exc:

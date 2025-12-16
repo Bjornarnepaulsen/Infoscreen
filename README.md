@@ -111,26 +111,50 @@ Perfekt for utvikling.
 
 ## 🐳 Kjøre via Docker (anbefalt for produksjon)
 
-1. Bygg container:
+1) Bygg bildet (fra repo-roten):
 
-    ```sh
-    docker build -t infoscreen .
-    ```
+```sh
+docker build -t infoscreen .
+```
 
-2. Kjør container:
+2) Lag .env (valgfritt, men anbefalt):
 
-    ```sh
-    docker run -p 8000:8000 \
-      -e ADMIN_USERNAME=admin \
-      -e ADMIN_PASSWORD=superhemmelig \
-      -e DATABASE_URL=sqlite:///./infoscreen.db \
-      infoscreen
-    ```
+```sh
+cp .env.example .env
+```
 
-3. Åpne appen:
+Fyll inn `ADMIN_USERNAME`, `ADMIN_PASSWORD`, evt. `WEATHER_LAT/LON` og `DATABASE_URL`.
 
-    👉 [http://localhost:8000](http://localhost:8000)
-    👉 [http://localhost:8000/admin.html](http://localhost:8000/admin.html)
+3) Kjør containeren (enkelt oppsett, SQLite internt i containeren):
+
+```sh
+docker run --name infoscreen \
+  -p 8000:8000 \
+  --env-file .env \
+  infoscreen
+```
+
+4) Ønsker du varig database mellom restarts? Monter en volum-mappe og pek DB dit:
+
+```sh
+mkdir -p data
+docker run --name infoscreen \
+  -p 8000:8000 \
+  --env-file .env \
+  -v $(pwd)/data:/app/data \
+  -e DATABASE_URL=sqlite:////app/data/infoscreen.db \
+  infoscreen
+```
+
+5) Åpne appen:
+
+👉 [http://localhost:8000](http://localhost:8000)  
+👉 [http://localhost:8000/admin.html](http://localhost:8000/admin.html)
+
+6) Nyttig:
+- Stoppe: `docker stop infoscreen`
+- Starte igjen: `docker start infoscreen`
+- Logg: `docker logs -f infoscreen`
 
 ---
 

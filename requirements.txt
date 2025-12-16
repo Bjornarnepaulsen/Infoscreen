@@ -4,3 +4,4 @@ feedparser
 sqlalchemy
 pydantic
 python-dotenv
+certifi
