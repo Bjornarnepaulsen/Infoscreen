@@ -1,7 +1,7 @@
 // ------------------------------------
 // Debug
 // ------------------------------------
-console.log("screen.js lastet – versjon 3.5 icons v20251208h");
+console.log("screen.js lastet – versjon 3.8 menu v20251216c");
 
 // ------------------------------------
 // Konstanter
@@ -14,6 +14,65 @@ const INNENRIKS_API_URL = "/api/rss/innenriks";
 const UTENRIKS_API_URL = "/api/rss/utenriks";
 const HVA_SKJER_API_URL = "/api/hva-skjer";
 const WEATHER_API_URL = "/api/weather";
+
+// ------------------------------------
+// Side-panel (admin)
+// ------------------------------------
+
+const menuButton = document.getElementById("menu-button");
+const sidePanel = document.getElementById("side-panel");
+const sidePanelClose = document.getElementById("side-panel-close");
+const sidePanelBackdrop = document.getElementById("side-panel-backdrop");
+
+function openPanel() {
+  if (!sidePanel || !sidePanelBackdrop) return;
+  sidePanel.classList.add("open");
+  sidePanelBackdrop.classList.add("open");
+  sidePanel.setAttribute("aria-hidden", "false");
+  if (menuButton) {
+    menuButton.classList.add("open");
+    menuButton.setAttribute("aria-expanded", "true");
+  }
+}
+
+function closePanel() {
+  if (!sidePanel || !sidePanelBackdrop) return;
+  sidePanel.classList.remove("open");
+  sidePanelBackdrop.classList.remove("open");
+  sidePanel.setAttribute("aria-hidden", "true");
+  if (menuButton) {
+    menuButton.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+  }
+}
+
+function togglePanel() {
+  if (!sidePanel) return;
+  if (sidePanel.classList.contains("open")) {
+    closePanel();
+  } else {
+    openPanel();
+  }
+}
+
+if (menuButton) {
+  menuButton.addEventListener("click", togglePanel);
+  menuButton.setAttribute("aria-expanded", "false");
+}
+
+if (sidePanelClose) {
+  sidePanelClose.addEventListener("click", closePanel);
+}
+
+if (sidePanelBackdrop) {
+  sidePanelBackdrop.addEventListener("click", closePanel);
+}
+
+document.addEventListener("keydown", (evt) => {
+  if (evt.key === "Escape") {
+    closePanel();
+  }
+});
 
 // ------------------------------------
 // Klokke

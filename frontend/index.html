@@ -8,10 +8,16 @@
   <meta http-equiv="refresh" content="3600" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./styles.css?v=20251208h" />
+  <link rel="stylesheet" href="./styles.css?v=20251216c" />
 </head>
 <body>
   <div class="screen">
+    <button class="menu-button" id="menu-button" aria-label="Åpne meny" aria-expanded="false">
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </button>
+
     <header>
       <div class="header-left">
         <div class="title"></div>
@@ -77,6 +83,17 @@
 
   </div>
 
-  <script src="./screen.js?v=20251208h"></script>
+  <div class="side-panel-backdrop" id="side-panel-backdrop"></div>
+  <aside class="side-panel" id="side-panel" aria-hidden="true">
+    <div class="side-panel__header">
+      <div class="side-panel__title">Meny</div>
+      <button class="side-panel__close" id="side-panel-close" aria-label="Lukk meny">×</button>
+    </div>
+    <nav class="side-panel__nav">
+      <a href="/admin.html" class="side-panel__link">Åpne adminpanel</a>
+    </nav>
+  </aside>
+
+  <script src="./screen.js?v=20251216c"></script>
 </body>
 </html>
